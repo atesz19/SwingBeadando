@@ -195,17 +195,6 @@
           </grid>
         </constraints>
       </vspacer>
-      <component id="e0474" class="javax.swing.JList" binding="etel_list" custom-create="true">
-        <constraints>
-          <grid row="18" column="3" row-span="1" col-span="5" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="100" height="50"/>
-          </grid>
-        </constraints>
-        <properties>
-          <focusCycleRoot value="false"/>
-          <valueIsAdjusting value="false"/>
-        </properties>
-      </component>
       <component id="a40c6" class="javax.swing.JComboBox" binding="etel_comboBox" custom-create="true">
         <constraints>
           <grid row="17" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -253,7 +242,7 @@
           <text value="1 db"/>
         </properties>
       </component>
-      <component id="27a8e" class="javax.swing.JButton" binding="etel_hozzaad_button">
+      <component id="27a8e" class="javax.swing.JButton" binding="etel_hozzaad_button" custom-create="true">
         <constraints>
           <grid row="17" column="6" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -261,7 +250,7 @@
           <text value="Hozzáad"/>
         </properties>
       </component>
-      <component id="b9728" class="javax.swing.JButton" binding="etel_torles_button">
+      <component id="b9728" class="javax.swing.JButton" binding="etel_torles_button" custom-create="true">
         <constraints>
           <grid row="19" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -369,6 +358,26 @@
           <text value="db"/>
         </properties>
       </component>
+      <scrollpane id="8fd86" binding="scrollpane" custom-create="true">
+        <constraints>
+          <grid row="18" column="3" row-span="1" col-span="5" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <horizontalScrollBarPolicy value="31"/>
+          <verticalScrollBarPolicy value="22"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="e0474" class="javax.swing.JList" binding="etel_list" custom-create="true">
+            <constraints/>
+            <properties>
+              <focusCycleRoot value="false"/>
+              <selectionMode value="0"/>
+              <valueIsAdjusting value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>

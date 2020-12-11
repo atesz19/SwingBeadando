@@ -3,19 +3,20 @@ package com.company;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class AsztalFoglalas {
 
     public final JFrame frame = new JFrame("Asztalfoglalás");
 
+    private int osszesOsszeg=0;
     private JPanel FoglalasPane;
     private JComboBox<String> idopont_comboBox;
     private JSpinner letszam_spinner;
@@ -27,7 +28,7 @@ public class AsztalFoglalas {
     private JTextField phone_textField;
     private JTextField lakcim_textField;
     private JList<String> etel_list;
-    private JComboBox etel_comboBox;
+    private JComboBox<String> etel_comboBox;
     private JSpinner etel_spinner;
     private JButton etel_hozzaad_button;
     private JButton etel_torles_button;
@@ -36,12 +37,12 @@ public class AsztalFoglalas {
     private JLabel fizetendo_osszeg_label_int;
     private JTextField email_textField;
     private JButton search_data_button;
-    DefaultListModel<String> model = new DefaultListModel<>();
+    private JScrollPane scrollpane;
 
     public AsztalFoglalas() {
-        eventsManager();
         setUIprops();
         createUIComponents();
+        eventsManager();
         frame.setContentPane(FoglalasPane);
         frame.pack();
         frame.setMinimumSize(frame.getSize());
@@ -50,8 +51,8 @@ public class AsztalFoglalas {
     }
 
     private void createUIComponents() {
-        String[] s = {""};
-        etel_list = new JList<>(s);
+        DefaultListModel<String> model = new DefaultListModel<>();
+        etel_list = new JList<>(model);
 
         ArrayList<String> etelek_listaja = new ArrayList<String>();
         for (String name : ProgramDataManager.getÉtelek().keySet()) {
@@ -59,12 +60,67 @@ public class AsztalFoglalas {
             etelek_listaja.add(name + ", " + price + " Ft");
         }
         etel_comboBox = new JComboBox(etelek_listaja.toArray());
+        etel_comboBox.setSelectedIndex(0);
+        etel_comboBox.setEnabled(true);
+        etel_comboBox.setEditable(false);
+
+        etel_comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String item = e.getItem().toString();
+                for(int i = 0; i < etel_comboBox.getItemCount();i++){
+                    if(item.equalsIgnoreCase(etel_comboBox.getItemAt(i).toString())){
+                        etel_comboBox.setSelectedIndex(i);
+                    }
+                }
+            }
+        });
 
         ArrayList<String> foglalasok_listaja = new ArrayList<String>();
         for(int i = ProgramDataManager.getNyitva_innen();i < ProgramDataManager.getNyitva_eddig(); i++){
             foglalasok_listaja.add(i + ":00 - " + (i+1) + ":00");
         }
         idopont_comboBox = new JComboBox(foglalasok_listaja.toArray());
+        idopont_comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String item = e.getItem().toString();
+                for(int i = 0; i < idopont_comboBox.getItemCount();i++){
+                    if(item.equalsIgnoreCase(idopont_comboBox.getItemAt(i).toString())){
+                        idopont_comboBox.setSelectedIndex(i);
+                    }
+                }
+            }
+        });
+
+        etel_hozzaad_button = new JButton();
+        etel_hozzaad_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int ar = 0;
+                String[] getar = etel_comboBox.getSelectedItem().toString().split(",");
+                for (String name : ProgramDataManager.getÉtelek().keySet()) {
+                    if(name.equalsIgnoreCase(getar[0])) ar = ProgramDataManager.getÉtelek().get(name);
+                }
+                osszesOsszeg += ((Integer.parseInt(etel_spinner.getValue().toString())) * ar);
+                fizetendo_osszeg_label_int.setText(String.valueOf(osszesOsszeg));
+                model.addElement("> "+ getar[0] + "   -   " + etel_spinner.getValue() + "db    ==>>    " + ((Integer.parseInt(etel_spinner.getValue().toString())) * ar) + "Ft");
+            }
+        });
+        scrollpane = new JScrollPane();
+        scrollpane.setViewportView(etel_list);
+        etel_list.setLayoutOrientation(JList.VERTICAL);
+
+        etel_list.setSelectionModel(new DefaultListSelectionModel());
+
+
+        etel_torles_button = new JButton();
+        etel_torles_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(etel_list.getSelectedValue());
+            }
+        });
     }
 
     private void setUIprops() {
@@ -96,15 +152,6 @@ public class AsztalFoglalas {
             }
         });
 
-        etel_hozzaad_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DefaultListModel<String> model = new DefaultListModel<>();
-
-                System.out.println(String.valueOf(etel_comboBox.getSelectedIndex()));
-
-            }
-        });
 
 
     }
