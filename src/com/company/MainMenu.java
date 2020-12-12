@@ -51,19 +51,5 @@ public class MainMenu {
         }
     }
 
-    public int saveData(String s){
-        int i = 0;
-        try {
-            FileWriter myWriter = new FileWriter("save.txt");
-            myWriter.write(s);
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-            i=1;
-        }
-        return i;
-    }
-
 
 }

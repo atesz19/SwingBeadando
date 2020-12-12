@@ -1,12 +1,16 @@
 package com.company;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ProgramDataManager {
-    private static int nyitva_innen = 10;
+    private static int nyitva_innen = 9;
     private static int nyitva_eddig = 22;
     private static int asztalok_száma = 12;
-    private static HashMap<String,Integer> ételek = new HashMap<String,Integer>();
+    private static LinkedList<FoodItem> ételek_lista = new LinkedList<>();
 
     public static int getNyitva_innen() {
         return nyitva_innen;
@@ -20,12 +24,36 @@ public class ProgramDataManager {
         return asztalok_száma;
     }
 
-    public static HashMap<String, Integer> getÉtelek() {
-        ételek.put("Húsleves",800);
-        ételek.put("Bableves", 990);
-        ételek.put("Palacsinta",1100);
-        ételek.put("Spagetti", 890);
-        ételek.put("Desszert", 650);
-        return ételek;
+    public static void addNewFood(String name, int price){
+        FoodItem f = new FoodItem(name, price,ételek_lista.size()+1);
+        ételek_lista.add(f);
     }
+
+    public static LinkedList<FoodItem> getÉtelek_lista(){
+        return ételek_lista;
+    }
+
+    public static int saveData(String s){
+        int i = 0;
+        try {
+            FileWriter myWriter = new FileWriter("save.txt");
+            myWriter.write(s);
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+            i=1;
+        }
+        return i;
+    }
+
+    public static FoodItem getFoodByID(int id){
+        for(FoodItem f:ételek_lista){
+            if(f.id == id){
+                return f;
+            }
+        }
+        return null;
+    }
+
 }
