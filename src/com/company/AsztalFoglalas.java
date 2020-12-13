@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 
 public class AsztalFoglalas {
 
@@ -37,6 +38,7 @@ public class AsztalFoglalas {
     private JButton search_data_button;
     private JTable etel_table;
     private JScrollPane table_scrollpane;
+    private JLabel errorSave_label;
 
     public AsztalFoglalas() {
         setUIcomponents();
@@ -50,6 +52,11 @@ public class AsztalFoglalas {
     private void createUIComponents() {
         //Ételek hozzáadása
         addFoodItems();
+
+        name_textField = new JTextField();
+        phone_textField = new JTextField("+36");
+        email_textField = new JTextField();
+        lakcim_textField = new JTextField();
 
         //Az ételek kezelésére szolgáló részek
         String[] fejlec = {"ID", "Étel neve", "Darabszám", "Ár"};
@@ -91,7 +98,7 @@ public class AsztalFoglalas {
         etel_hozzaad_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FoodItem food = new FoodItem("",0,-1);
+                FoodItem food = new FoodItem("",0);
                 String[] s = etel_comboBox.getSelectedItem().toString().split(",");
                 int id = Integer.parseInt(s[0]);
                 for(FoodItem f:ProgramDataManager.getÉtelek_lista()){
@@ -144,6 +151,7 @@ public class AsztalFoglalas {
             foglalasok_listaja.add(i + ":00 - " + (i+1) + ":00");
         }
         idopont_comboBox = new JComboBox(foglalasok_listaja.toArray());
+        idopont_comboBox.setSelectedIndex(-1);
     }
 
     private void setUIcomponents() {
@@ -171,6 +179,47 @@ public class AsztalFoglalas {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+        });
+
+        mentes_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!name_textField.getText().isEmpty()
+                        && !phone_textField.getText().isEmpty()
+                        && idopont_comboBox.getSelectedIndex() != -1
+                ){
+                    errorSave_label.setText("");
+                    if(!ProgramDataManager.checkUserIsSaved(phone_textField.getText())){
+                        ProgramDataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
+                    }
+                    String[] idopont_mentes = idopont_comboBox.getSelectedItem().toString().split(":");
+                    LinkedList<FoodItem> food_list = new LinkedList<>();
+                    for(int i = 1; i < etel_table.getRowCount(); i++){
+                            FoodItem fi = new FoodItem(
+                                    etel_table.getModel().getValueAt(i,1).toString(),
+                                    Integer.parseInt(etel_table.getModel().getValueAt(i, 3).toString())
+                            );
+                            fi.db = Integer.parseInt(etel_table.getModel().getValueAt(i,2).toString());
+                            fi.id = Integer.parseInt(etel_table.getModel().getValueAt(i,0).toString());
+                            food_list.add(fi);
+                    }
+                    ProgramDataManager.saveData(
+                            ProgramDataManager.getUserIDfromName(name_textField.getText()),
+                            date_selector.getEditor().getText(),
+                            Integer.parseInt(idopont_mentes[0]),
+                            (int) letszam_spinner.getValue(),
+                            food_list
+                            );
+
+                    JOptionPane.showMessageDialog(frame,"Sikeresen létrehoztad a foglalást!");
+
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+
+
+                } else {
+                    errorSave_label.setText("Hiányzó adatok!");
+                }
             }
         });
 

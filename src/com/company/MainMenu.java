@@ -49,6 +49,18 @@ public class MainMenu {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+
+        try {
+            File myObj = new File("users.txt");
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
 
