@@ -195,7 +195,7 @@ public class AsztalFoglalas {
                     }
                     String[] idopont_mentes = idopont_comboBox.getSelectedItem().toString().split(":");
                     LinkedList<FoodItem> food_list = new LinkedList<>();
-                    for(int i = 1; i < etel_table.getRowCount(); i++){
+                    for(int i = 0; i < etel_table.getRowCount(); i++){
                             FoodItem fi = new FoodItem(
                                     etel_table.getModel().getValueAt(i,1).toString(),
                                     Integer.parseInt(etel_table.getModel().getValueAt(i, 3).toString())
@@ -205,7 +205,7 @@ public class AsztalFoglalas {
                             food_list.add(fi);
                     }
                     ProgramDataManager.saveData(
-                            ProgramDataManager.getUserIDfromName(name_textField.getText()),
+                            ProgramDataManager.getUserIDfromPhone(phone_textField.getText()),
                             date_selector.getEditor().getText(),
                             Integer.parseInt(idopont_mentes[0]),
                             (int) letszam_spinner.getValue(),

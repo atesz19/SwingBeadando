@@ -46,13 +46,13 @@ public class ProgramDataManager {
 
     public static void saveData(int userId, String date, int time, int count, LinkedList<FoodItem> ll) {
         try {
-            FileWriter myWriter = new FileWriter("save.txt");
+            FileWriter myWriter = new FileWriter("save.txt",true);
             StringBuilder s = new StringBuilder(userId + ";" + date + ";" + time + ";" + count + ";");
             for(FoodItem fi:ll){
                 String ss = fi.name + "," + fi.db + "," + fi.price + "$";
                 s.append(ss);
             }
-            if(getFileRowCount("save.txt") > 1) myWriter.append("\n");
+            if(getFileRowCount("save.txt") >= 1) myWriter.append("\n");
             myWriter.append(s.toString());
             myWriter.close();
         } catch (IOException e) {
@@ -68,8 +68,8 @@ public class ProgramDataManager {
             while (reader.readLine() != null) lines++;
             reader.close();
             String s = (lines + 1) + ";" + name + ";" + phone + ";" + email + ";" + adress;
-            FileWriter myWriter = new FileWriter("users.txt");
-            if(getFileRowCount("users.txt") > 1) myWriter.append("\n");
+            FileWriter myWriter = new FileWriter("users.txt",true);
+            if(getFileRowCount("users.txt") >= 1) myWriter.append("\n");
             myWriter.append(s);
             myWriter.close();
         } catch (IOException e) {
@@ -78,14 +78,13 @@ public class ProgramDataManager {
         }
     }
 
-    public static int getUserIDfromName(String name){
-        int i = -1;
+    public static int getUserIDfromPhone(String phone_number){
         try {
             File file = new File("users.txt");
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String[] s = sc.nextLine().split(";");
-                if(s[1].equalsIgnoreCase(name)){
+                if(s[2].equalsIgnoreCase(phone_number)){
                     return Integer.parseInt(s[0]);
                 }
             }
@@ -93,7 +92,7 @@ public class ProgramDataManager {
             System.out.println("Hiba...");
             e.printStackTrace();
         }
-        return i;
+        return -1;
     }
 
     public static LinkedList<UserData> getUsers() {
