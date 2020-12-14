@@ -1,16 +1,13 @@
 package com.company;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.*;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 public class ProgramDataManager {
-    private static int nyitva_innen = 9;
-    private static int nyitva_eddig = 22;
-    private static int asztalok_száma = 12;
+    private static final int nyitva_innen = 9;
+    private static final int nyitva_eddig = 22;
+    private static final int asztalok_száma = 12;
     private static LinkedList<FoodItem> ételek_lista = new LinkedList<>();
 
     public static int getNyitva_innen() {

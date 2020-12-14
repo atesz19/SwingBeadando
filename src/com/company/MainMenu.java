@@ -1,9 +1,9 @@
 package com.company;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class MainMenu {
@@ -11,7 +11,6 @@ public class MainMenu {
     private JPanel MainPane;
     private JButton button_menu_asztalfoglalas;
     private JButton button_menu_foglalasok;
-    private JLabel label_main_cim;
 
 
     public MainMenu() {

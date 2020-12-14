@@ -9,6 +9,5 @@ public class FoodItem {
     public FoodItem(String name, int price) {
         this.price = price;
         this.name = name;
-        this.id = id;
     }
 }

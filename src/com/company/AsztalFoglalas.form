@@ -14,7 +14,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="5206b" class="javax.swing.JLabel" binding="label_idopont">
+      <component id="5206b" class="javax.swing.JLabel">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -22,7 +22,7 @@
           <text value="*Időpont:"/>
         </properties>
       </component>
-      <component id="6250e" class="javax.swing.JLabel" binding="label_letszam">
+      <component id="6250e" class="javax.swing.JLabel">
         <constraints>
           <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -358,10 +358,10 @@
           <text value="db"/>
         </properties>
       </component>
-      <scrollpane id="82c95" binding="table_scrollpane" custom-create="true">
+      <scrollpane id="82c95">
         <constraints>
           <grid row="18" column="3" row-span="1" col-span="6" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <maximum-size width="-1" height="200"/>
+            <maximum-size width="-1" height="100"/>
           </grid>
         </constraints>
         <properties/>
@@ -372,7 +372,8 @@
             <properties>
               <autoCreateRowSorter value="false"/>
               <fillsViewportHeight value="true"/>
-              <preferredScrollableViewportSize width="400" height="200"/>
+              <preferredScrollableViewportSize width="400" height="100"/>
+              <showHorizontalLines value="true"/>
             </properties>
             <clientProperties>
               <JTable.autoStartsEdit class="java.lang.Boolean" value="false"/>
