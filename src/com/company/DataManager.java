@@ -108,7 +108,7 @@ public class DataManager {
     }
 
     public static LinkedList<ReservationData> getReservations(){
-        LinkedList<ReservationData> r_dara = new LinkedList<>();
+        LinkedList<ReservationData> r_data = new LinkedList<>();
         try{
             File file = new File("save.txt");
             Scanner sc = new Scanner(file);
@@ -132,13 +132,32 @@ public class DataManager {
                         rd.foods_list.add(fi);
                     }
                 }
+                r_data.add(rd);
             }
 
         } catch (IOException e){
             e.printStackTrace();
         }
 
-        return r_dara;
+        return r_data;
+    }
+
+    public static int getTableCount(int emberek_szama){
+        double db2 = emberek_szama;
+        db2=db2/4+0.75;
+        return((int)db2);
+    }
+
+    public static int getFreeTableCount(String date, int time){
+        LinkedList<ReservationData> rd = getReservations();
+        int count = 0;
+        for(ReservationData r:rd){
+            if(r.date.equalsIgnoreCase(date) && r.time == time){
+                count += getTableCount(r.count);
+            }
+        }
+        count = asztalok_száma-count;
+        return count;
     }
 
     public static int getFoodID(String name){

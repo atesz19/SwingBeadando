@@ -49,10 +49,73 @@ public class AsztalFoglalas {
         //Ételek hozzáadása
         addFoodItems();
 
+        errorSave_label = new JLabel("");
+        mentes_button = new JButton();
+        mentes_button.addActionListener(e -> {
+            if(!name_textField.getText().isEmpty()
+                    && !phone_textField.getText().isEmpty()
+                    && idopont_comboBox.getSelectedIndex() != -1
+            ){
+                errorSave_label.setText("");
+                if(!DataManager.checkUserIsSaved(phone_textField.getText())){
+                    DataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
+                }
+                String[] idopont_mentes = Objects.requireNonNull(idopont_comboBox.getSelectedItem()).toString().split(":");
+                LinkedList<FoodItem> food_list = new LinkedList<>();
+                for(int i = 0; i < etel_table.getRowCount(); i++){
+                    FoodItem fi = new FoodItem(
+                            etel_table.getModel().getValueAt(i,1).toString(),
+                            Integer.parseInt(etel_table.getModel().getValueAt(i, 3).toString())
+                    );
+                    fi.db = Integer.parseInt(etel_table.getModel().getValueAt(i,2).toString());
+                    fi.id = Integer.parseInt(etel_table.getModel().getValueAt(i,0).toString());
+                    food_list.add(fi);
+                }
+                DataManager.saveData(
+                        DataManager.getUserIDfromPhone(phone_textField.getText()),
+                        date_selector.getEditor().getText(),
+                        Integer.parseInt(idopont_mentes[0]),
+                        (int) letszam_spinner.getValue(),
+                        food_list
+                );
+
+                JOptionPane.showMessageDialog(frame,"Sikeresen létrehoztad a foglalást!");
+
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+
+
+            } else {
+                errorSave_label.setText("Hiányzó adatok!");
+            }
+        });
+
         name_textField = new JTextField();
         phone_textField = new JTextField("+36");
         email_textField = new JTextField();
         lakcim_textField = new JTextField();
+
+        date_selector = new JXDatePicker();
+        date_selector.getEditor().setEditable(false);
+        date_selector.getMonthView().setTodayBackground(Color.ORANGE);
+        date_selector.getEditor().setValue(new Date(System.currentTimeMillis()));
+        date_selector.addActionListener(e -> {
+            letszam_spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
+            idopont_comboBox.removeAllItems();
+            for(int i = DataManager.getNyitva_innen(); i < DataManager.getNyitva_eddig(); i++){
+                int freeTablesCount = DataManager.getFreeTableCount(date_selector.getEditor().getText(),i);
+                if(freeTablesCount > 0){
+                    idopont_comboBox.addItem(i + ":00 - " + (i+1) + ":00");
+                }
+            }
+            idopont_comboBox.setSelectedIndex(-1);
+            if(idopont_comboBox.getItemCount() == 0){
+                errorSave_label.setText("A MAI NAP BETELT!");
+                mentes_button.setEnabled(false);
+            } else {
+                errorSave_label.setText("");
+                mentes_button.setEnabled(true);
+            }
+        });
 
         //Az ételek kezelésére szolgáló részek
         String[] fejlec = {"ID", "Étel neve", "Darabszám", "Ár"};
@@ -135,71 +198,42 @@ public class AsztalFoglalas {
         });
 
         //Foglalás dátum választása
-        ArrayList<String> foglalasok_listaja = new ArrayList<>();
+        idopont_comboBox = new JComboBox<String>();
         for(int i = DataManager.getNyitva_innen(); i < DataManager.getNyitva_eddig(); i++){
-
-            foglalasok_listaja.add(i + ":00 - " + (i+1) + ":00");
+            int freeTablesCount = DataManager.getFreeTableCount(date_selector.getEditor().getText(),i);
+            if(freeTablesCount > 0){
+                idopont_comboBox.addItem(i + ":00 - " + (i+1) + ":00");
+            }
         }
-        idopont_comboBox = new JComboBox(foglalasok_listaja.toArray());
         idopont_comboBox.setSelectedIndex(-1);
+        if(idopont_comboBox.getItemCount() == 0){
+            errorSave_label.setText("A MAI NAP BETELT!");
+            mentes_button.setEnabled(false);
+        } else {
+            errorSave_label.setText("");
+            mentes_button.setEnabled(true);
+        }
+        idopont_comboBox.addItemListener(e -> {
+            String[] s = e.getItem().toString().split(":");
+            letszam_spinner.setModel(new SpinnerNumberModel(1, 1, DataManager.getFreeTableCount(date_selector.getEditor().getText(),Integer.parseInt(s[0]))*4, 1));
+            ((JSpinner.DefaultEditor) letszam_spinner.getEditor()).getTextField().setEditable(false);
+        });
+
     }
 
     private void setUIcomponents() {
-        date_selector.getEditor().setEditable(false);
-        date_selector.getMonthView().setTodayBackground(Color.ORANGE);
-        date_selector.getEditor().setValue(new Date(System.currentTimeMillis()));
 
-        letszam_spinner.setModel(new SpinnerNumberModel(1, 1, DataManager.getAsztalok_száma() * 4, 1));
+        letszam_spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
         ((JSpinner.DefaultEditor) letszam_spinner.getEditor()).getTextField().setEditable(false);
 
         letszam_spinner.addChangeListener(e -> {
-            double db2 = (Integer)letszam_spinner.getValue();
-            db2=db2/4+0.75;
-            label_szukseges_asztalok_int.setText((int)db2 + " db");
+            label_szukseges_asztalok_int.setText(DataManager.getTableCount((Integer)letszam_spinner.getValue()) + " db");
         });
 
         etel_spinner.setModel(new SpinnerNumberModel(1, 1, 20, 1));
         ((JSpinner.DefaultEditor) etel_spinner.getEditor()).getTextField().setEditable(false);
 
         megsem_button.addActionListener(e -> frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING)));
-
-        mentes_button.addActionListener(e -> {
-            if(!name_textField.getText().isEmpty()
-                    && !phone_textField.getText().isEmpty()
-                    && idopont_comboBox.getSelectedIndex() != -1
-            ){
-                errorSave_label.setText("");
-                if(!DataManager.checkUserIsSaved(phone_textField.getText())){
-                    DataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
-                }
-                String[] idopont_mentes = Objects.requireNonNull(idopont_comboBox.getSelectedItem()).toString().split(":");
-                LinkedList<FoodItem> food_list = new LinkedList<>();
-                for(int i = 0; i < etel_table.getRowCount(); i++){
-                        FoodItem fi = new FoodItem(
-                                etel_table.getModel().getValueAt(i,1).toString(),
-                                Integer.parseInt(etel_table.getModel().getValueAt(i, 3).toString())
-                        );
-                        fi.db = Integer.parseInt(etel_table.getModel().getValueAt(i,2).toString());
-                        fi.id = Integer.parseInt(etel_table.getModel().getValueAt(i,0).toString());
-                        food_list.add(fi);
-                }
-                DataManager.saveData(
-                        DataManager.getUserIDfromPhone(phone_textField.getText()),
-                        date_selector.getEditor().getText(),
-                        Integer.parseInt(idopont_mentes[0]),
-                        (int) letszam_spinner.getValue(),
-                        food_list
-                        );
-
-                JOptionPane.showMessageDialog(frame,"Sikeresen létrehoztad a foglalást!");
-
-                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-
-
-            } else {
-                errorSave_label.setText("Hiányzó adatok!");
-            }
-        });
 
 
     }
