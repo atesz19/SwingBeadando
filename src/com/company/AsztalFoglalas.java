@@ -84,7 +84,7 @@ public class AsztalFoglalas {
         etel_table.setShowVerticalLines(false);
 
         ArrayList<String> etelek_listaja = new ArrayList<>();
-        for (FoodItem foodItem: ProgramDataManager.getÉtelek_lista()) {
+        for (FoodItem foodItem: DataManager.getÉtelek_lista()) {
             etelek_listaja.add(foodItem.id + ", " + foodItem.name + ", " + foodItem.price + " Ft");
         }
         etel_comboBox = new JComboBox(etelek_listaja.toArray());
@@ -94,7 +94,7 @@ public class AsztalFoglalas {
             FoodItem food = new FoodItem("",0);
             String[] s = Objects.requireNonNull(etel_comboBox.getSelectedItem()).toString().split(",");
             int id = Integer.parseInt(s[0]);
-            for(FoodItem f:ProgramDataManager.getÉtelek_lista()){
+            for(FoodItem f: DataManager.getÉtelek_lista()){
                 if(id == f.id) food=f;
             }
 
@@ -136,7 +136,8 @@ public class AsztalFoglalas {
 
         //Foglalás dátum választása
         ArrayList<String> foglalasok_listaja = new ArrayList<>();
-        for(int i = ProgramDataManager.getNyitva_innen();i < ProgramDataManager.getNyitva_eddig(); i++){
+        for(int i = DataManager.getNyitva_innen(); i < DataManager.getNyitva_eddig(); i++){
+
             foglalasok_listaja.add(i + ":00 - " + (i+1) + ":00");
         }
         idopont_comboBox = new JComboBox(foglalasok_listaja.toArray());
@@ -148,7 +149,7 @@ public class AsztalFoglalas {
         date_selector.getMonthView().setTodayBackground(Color.ORANGE);
         date_selector.getEditor().setValue(new Date(System.currentTimeMillis()));
 
-        letszam_spinner.setModel(new SpinnerNumberModel(1, 1, ProgramDataManager.getAsztalok_száma() * 4, 1));
+        letszam_spinner.setModel(new SpinnerNumberModel(1, 1, DataManager.getAsztalok_száma() * 4, 1));
         ((JSpinner.DefaultEditor) letszam_spinner.getEditor()).getTextField().setEditable(false);
 
         letszam_spinner.addChangeListener(e -> {
@@ -168,8 +169,8 @@ public class AsztalFoglalas {
                     && idopont_comboBox.getSelectedIndex() != -1
             ){
                 errorSave_label.setText("");
-                if(!ProgramDataManager.checkUserIsSaved(phone_textField.getText())){
-                    ProgramDataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
+                if(!DataManager.checkUserIsSaved(phone_textField.getText())){
+                    DataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
                 }
                 String[] idopont_mentes = Objects.requireNonNull(idopont_comboBox.getSelectedItem()).toString().split(":");
                 LinkedList<FoodItem> food_list = new LinkedList<>();
@@ -182,8 +183,8 @@ public class AsztalFoglalas {
                         fi.id = Integer.parseInt(etel_table.getModel().getValueAt(i,0).toString());
                         food_list.add(fi);
                 }
-                ProgramDataManager.saveData(
-                        ProgramDataManager.getUserIDfromPhone(phone_textField.getText()),
+                DataManager.saveData(
+                        DataManager.getUserIDfromPhone(phone_textField.getText()),
                         date_selector.getEditor().getText(),
                         Integer.parseInt(idopont_mentes[0]),
                         (int) letszam_spinner.getValue(),
@@ -204,12 +205,12 @@ public class AsztalFoglalas {
     }
 
     private void addFoodItems(){
-        ProgramDataManager.addNewFood("Húsleves",600);
-        ProgramDataManager.addNewFood("Gyümölcsleves", 850);
-        ProgramDataManager.addNewFood("Rántotthús rízzsel",1350);
-        ProgramDataManager.addNewFood("Sajttál", 1200);
-        ProgramDataManager.addNewFood("Fánk (3db)", 650);
-        ProgramDataManager.addNewFood("Palacsinta", 550);
+        DataManager.addNewFood("Húsleves",600);
+        DataManager.addNewFood("Gyümölcsleves", 850);
+        DataManager.addNewFood("Rántotthús rízzsel",1350);
+        DataManager.addNewFood("Sajttál", 1200);
+        DataManager.addNewFood("Fánk (3db)", 650);
+        DataManager.addNewFood("Palacsinta", 550);
     }
 
 

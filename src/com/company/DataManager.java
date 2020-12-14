@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class ProgramDataManager {
+public class DataManager {
     private static final int nyitva_innen = 9;
     private static final int nyitva_eddig = 22;
     private static final int asztalok_száma = 12;
@@ -53,7 +53,6 @@ public class ProgramDataManager {
             myWriter.append(s.toString());
             myWriter.close();
         } catch (IOException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -70,7 +69,6 @@ public class ProgramDataManager {
             myWriter.append(s);
             myWriter.close();
         } catch (IOException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -86,7 +84,6 @@ public class ProgramDataManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Hiba...");
             e.printStackTrace();
         }
         return -1;
@@ -105,10 +102,52 @@ public class ProgramDataManager {
                 ll.add(ud);
             }
         } catch (IOException e) {
-            System.out.println("Hiba...");
             e.printStackTrace();
         }
         return ll;
+    }
+
+    public static LinkedList<ReservationData> getReservations(){
+        LinkedList<ReservationData> r_dara = new LinkedList<>();
+        try{
+            File file = new File("save.txt");
+            Scanner sc = new Scanner(file);
+            while(sc.hasNextLine()){
+                ReservationData rd = new ReservationData();
+                String[] r_string = sc.nextLine().split(";");
+                rd.userID = Integer.parseInt(r_string[0]);
+                rd.date = r_string[1];
+                rd.time = Integer.parseInt(r_string[2]);
+                rd.count = Integer.parseInt(r_string[3]);
+                if(r_string.length >=5) {
+                    String[] foods_string = r_string[4].split("[$]");
+                    for (String s : foods_string) {
+                        String[] f_item = s.split(",");
+                        FoodItem fi = new FoodItem(
+                                f_item[0],
+                                Integer.parseInt(f_item[2])
+                        );
+                        fi.db = Integer.parseInt(f_item[1]);
+                        fi.id = getFoodID(fi.name);
+                        rd.foods_list.add(fi);
+                    }
+                }
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return r_dara;
+    }
+
+    public static int getFoodID(String name){
+        for(FoodItem f:ételek_lista){
+            if(f.name.equalsIgnoreCase(name)){
+                return f.id;
+            }
+        }
+        return -1;
     }
 
     public static boolean checkUserIsSaved(String phone_number){
