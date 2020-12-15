@@ -1,3 +1,5 @@
 1;Bartha Attila;+36702697911;;
 2;Miklós;+36701234567;;
 3;Nagy Elek;+36201234567;;
+4;Nagy József;+36202020200;jozsef@jo.zsef;Mátészalka, Ipari út 9
+5;Kiss Miklós;+3670123456789;yes@yes.yes;4337,Jármi DGY u.89

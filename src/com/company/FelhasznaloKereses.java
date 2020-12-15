@@ -36,7 +36,12 @@ public class FelhasznaloKereses {
     private void createUIComponents() {
         doneButton = new JButton();
         DefaultTableModel tmodel = new DefaultTableModel();
-        usersTable = new JTable(tmodel);
+        usersTable = new JTable(tmodel){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tmodel.setColumnIdentifiers(new String[]{"ID","Név","Telefonszám","Email","Lakcím"});
         for(UserData u:DataManager.getUsers()){
             String[] sor = {String.valueOf(u.id),u.name,u.mobile_number,u.email,u.street};

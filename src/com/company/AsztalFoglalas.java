@@ -44,6 +44,21 @@ public class AsztalFoglalas {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setIconImage(new ImageIcon("rsc/icon.png").getImage());
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                super.windowActivated(e);
+                if(idopont_comboBox.getItemCount() == 0){
+                    errorSave_label.updateUI();
+                    errorSave_label.setText("A MAI NAP BETELT!");
+                    mentes_button.setEnabled(false);
+                } else {
+                    errorSave_label.setText("");
+                    mentes_button.setEnabled(true);
+                }
+            }
+        });
+
     }
 
     private void createUIComponents() {
@@ -60,18 +75,6 @@ public class AsztalFoglalas {
                 errorSave_label.setText("");
                 if(!DataManager.checkUserIsSaved(phone_textField.getText())){
                     DataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
-                } else {
-                    int id = DataManager.getUserIDfromPhone(phone_textField.getText());
-                    for(UserData u : DataManager.getUsers()){
-                        if(u.id == id){ //TODO:Módositások mentése!!!
-                            if(u.street.isEmpty()){
-                                u.street = lakcim_textField.getText();//no mentés
-                            }
-                            if(u.email.isEmpty()){
-                                u.email = email_textField.getText();//no mentés
-                            }
-                        }
-                    }
                 }
                 String[] idopont_mentes = Objects.requireNonNull(idopont_comboBox.getSelectedItem()).toString().split(":");
                 LinkedList<FoodItem> food_list = new LinkedList<>();
@@ -218,19 +221,11 @@ public class AsztalFoglalas {
             }
         }
         idopont_comboBox.setSelectedIndex(-1);
-        if(idopont_comboBox.getItemCount() == 0){
-            errorSave_label.setText("A MAI NAP BETELT!");
-            mentes_button.setEnabled(false);
-        } else {
-            errorSave_label.setText("");
-            mentes_button.setEnabled(true);
-        }
         idopont_comboBox.addItemListener(e -> {
             String[] s = e.getItem().toString().split(":");
             letszam_spinner.setModel(new SpinnerNumberModel(1, 1, DataManager.getFreeTableCount(date_selector.getEditor().getText(),Integer.parseInt(s[0]))*4, 1));
             ((JSpinner.DefaultEditor) letszam_spinner.getEditor()).getTextField().setEditable(false);
         });
-
     }
 
     private void setUIcomponents() {

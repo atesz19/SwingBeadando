@@ -78,16 +78,6 @@ public class FoglalasokMegtekintese {
 
             }
         }
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(reservationTable.getModel());
-        reservationTable.setRowSorter(sorter);
-        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
-
-        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-        sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-
-        sorter.setSortKeys(sortKeys);
-        sorter.sort();
-
         show_selected_button = new JButton();
         show_selected_button.addActionListener(e -> {
             if(reservationTable.getSelectedRow() != -1){
