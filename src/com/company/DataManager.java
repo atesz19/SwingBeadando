@@ -89,6 +89,28 @@ public class DataManager {
         return -1;
     }
 
+    public static UserData getUserfromID(int id){
+        UserData ud = new UserData(-1,"","");
+        try {
+            File file = new File("users.txt");
+            Scanner sc = new Scanner(file);
+            while (sc.hasNextLine()) {
+                String[] s = sc.nextLine().split(";");
+                if(s[0].equalsIgnoreCase(String.valueOf(id))){
+                    ud.id = Integer.parseInt(s[0]);
+                    ud.name = s[1];
+                    ud.mobile_number = s[2];
+                    if(s.length >= 4) ud.email = s[3]; else ud.email = "";
+                    if(s.length >= 5) ud.street = s[4]; else ud.street = "";
+                    return ud;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ud;
+    }
+
     public static LinkedList<UserData> getUsers() {
         LinkedList<UserData> ll = new LinkedList<>();
         try {

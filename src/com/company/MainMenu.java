@@ -1,8 +1,11 @@
 package com.company;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.IOException;
 
@@ -20,6 +23,7 @@ public class MainMenu {
         frame.setMinimumSize(frame.getSize());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setIconImage(new ImageIcon("rsc/icon.png").getImage());
 
         button_menu_asztalfoglalas.addActionListener(e -> {
             AsztalFoglalas asztalFoglalas = new AsztalFoglalas();
@@ -29,6 +33,18 @@ public class MainMenu {
                 public void windowClosing(WindowEvent e) {
                     frame.setVisible(true);
                     e.getWindow().dispose();
+                }
+            });
+        });
+
+        button_menu_foglalasok.addActionListener(e -> {
+            FoglalasokMegtekintese foglalasokMegtekintese = new FoglalasokMegtekintese();
+            frame.setVisible(false);
+            foglalasokMegtekintese.frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    e.getWindow().dispose();
+                    frame.setVisible(true);
                 }
             });
         });

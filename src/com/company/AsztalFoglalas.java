@@ -43,6 +43,7 @@ public class AsztalFoglalas {
         frame.setMinimumSize(frame.getSize());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setIconImage(new ImageIcon("rsc/icon.png").getImage());
     }
 
     private void createUIComponents() {
@@ -59,6 +60,18 @@ public class AsztalFoglalas {
                 errorSave_label.setText("");
                 if(!DataManager.checkUserIsSaved(phone_textField.getText())){
                     DataManager.saveUser(name_textField.getText(),phone_textField.getText(),email_textField.getText(),lakcim_textField.getText());
+                } else {
+                    int id = DataManager.getUserIDfromPhone(phone_textField.getText());
+                    for(UserData u : DataManager.getUsers()){
+                        if(u.id == id){ //TODO:Módositások mentése!!!
+                            if(u.street.isEmpty()){
+                                u.street = lakcim_textField.getText();//no mentés
+                            }
+                            if(u.email.isEmpty()){
+                                u.email = email_textField.getText();//no mentés
+                            }
+                        }
+                    }
                 }
                 String[] idopont_mentes = Objects.requireNonNull(idopont_comboBox.getSelectedItem()).toString().split(":");
                 LinkedList<FoodItem> food_list = new LinkedList<>();
@@ -146,11 +159,10 @@ public class AsztalFoglalas {
         etel_table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         etel_table.setShowVerticalLines(false);
 
-        ArrayList<String> etelek_listaja = new ArrayList<>();
+        etel_comboBox = new JComboBox<>();
         for (FoodItem foodItem: DataManager.getÉtelek_lista()) {
-            etelek_listaja.add(foodItem.id + ", " + foodItem.name + ", " + foodItem.price + " Ft");
+            etel_comboBox.addItem(foodItem.id + ", " + foodItem.name + ", " + foodItem.price + " Ft");
         }
-        etel_comboBox = new JComboBox(etelek_listaja.toArray());
 
         etel_hozzaad_button = new JButton();
         etel_hozzaad_button.addActionListener(e -> {
@@ -198,7 +210,7 @@ public class AsztalFoglalas {
         });
 
         //Foglalás dátum választása
-        idopont_comboBox = new JComboBox<String>();
+        idopont_comboBox = new JComboBox<>();
         for(int i = DataManager.getNyitva_innen(); i < DataManager.getNyitva_eddig(); i++){
             int freeTablesCount = DataManager.getFreeTableCount(date_selector.getEditor().getText(),i);
             if(freeTablesCount > 0){
@@ -226,9 +238,7 @@ public class AsztalFoglalas {
         letszam_spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
         ((JSpinner.DefaultEditor) letszam_spinner.getEditor()).getTextField().setEditable(false);
 
-        letszam_spinner.addChangeListener(e -> {
-            label_szukseges_asztalok_int.setText(DataManager.getTableCount((Integer)letszam_spinner.getValue()) + " db");
-        });
+        letszam_spinner.addChangeListener(e -> label_szukseges_asztalok_int.setText(DataManager.getTableCount((Integer)letszam_spinner.getValue()) + " db"));
 
         etel_spinner.setModel(new SpinnerNumberModel(1, 1, 20, 1));
         ((JSpinner.DefaultEditor) etel_spinner.getEditor()).getTextField().setEditable(false);
