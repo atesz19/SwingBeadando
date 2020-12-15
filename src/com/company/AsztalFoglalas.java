@@ -245,6 +245,17 @@ public class AsztalFoglalas {
 
         megsem_button.addActionListener(e -> frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING)));
 
+        search_data_button.addActionListener(e -> {
+            FelhasznaloKereses felhasznaloKereses = new FelhasznaloKereses(name_textField,phone_textField,email_textField,lakcim_textField);
+            frame.setVisible(false);
+            felhasznaloKereses.frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    e.getWindow().dispose();
+                    frame.setVisible(true);
+                }
+            });
+        });
 
     }
 
