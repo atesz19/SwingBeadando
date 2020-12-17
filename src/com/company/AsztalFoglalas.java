@@ -138,6 +138,7 @@ public class AsztalFoglalas {
 
         DefaultTableModel tmodel = new DefaultTableModel();
         etel_table = new JTable(tmodel){
+
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
